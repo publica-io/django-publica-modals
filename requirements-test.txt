@@ -7,4 +7,10 @@ django-nose>=1.2
 flake8>=2.1.0
 tox>=1.7.0
 
+django-polymorphic
+
 # Additional test requirements go here
+-e git+http://git@github.com/publica-io/django-attrs.git@72aefe664501eaa1cb78ad31e2d9b36fcb9a4503#egg=attrs
+-e git+http://git@github.com/publica-io/django-entropy.git@daf996bb16989385170f765f5bb8a8054857192c#egg=entropy
+-e git+http://git@github.com/publica-io/django-publica-images.git@47497dee7fd10ebad084638b2f15f8e50e088737#egg=images
+-e git+http://git@github.com/publica-io/django-publica-templates.git@503a4ba8700eb6f71fb6044c99b1c1415b4ed369#egg=templates

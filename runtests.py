@@ -17,6 +17,10 @@ try:
             "django.contrib.contenttypes",
             "django.contrib.sites",
             "modals",
+            "templates",
+            "images",
+            "attrs",
+            'tests'
         ],
         SITE_ID=1,
         NOSE_ARGS=['-s'],
