@@ -17,75 +17,40 @@ from django.contrib.contenttypes.models import ContentType
 from django.template import RequestContext
 
 from modals import models
-from modals.templatetags.modals_tags import bootstrapped_modals
-from templates.models import Template
-from images.models import Image, ImageInstance
-from models import Modalable
+from menus.models import Link
 
-class TestModals(unittest.TestCase):
+
+
+class TestModalLinks(unittest.TestCase):
 
     def setUp(self):
-        self.t1, _ = Template.objects.get_or_create(
-            name='modals/modal_detail.html', content='Does it matter')
+        
+        self.modal = models.Modal(
+            title = 'foo',
+            slug = 'foo')
+        self.modal.save()
 
-         # Create the Image
-        self.popup_image1, created = Image.objects.get_or_create(
-            title='Popup Image',
-            url='/img/test.jpg'
-        )
+        self.link = Link(
+            url='/some/funky/url')
+        self.link.save()
 
-        self.popup_image2, created = Image.objects.get_or_create(
-            title='Popup Image',
-            url='/img/test.jpg'
-        )
+        self.modal_link = models.ModalLinkAspect(
+            modal=self.modal,
+            link=self.link)
+        self.modal_link.save()
+        
 
-        self.modal1, _ = models.Modal.objects.get_or_create(enabled=True, title='Home Popup',
-                                                           template=self.t1, is_bootstrapped=True,
-                                                           text='This is going to be modal text')
+    def test_links(self):
 
-        self.modal2, _ = models.Modal.objects.get_or_create(enabled=True, title='Home Popup2',
-                                                           template=self.t1, is_bootstrapped=True,
-                                                           text='This is going to be modal text')
+        list_urls = [link.get_url() for link in self.modal.links]
+        self.assertEqual(list_urls, [u'/some/funky/url'])
 
-        # Add Image to Modal via ImageInstance
-        self.image_instance, _ = ImageInstance.objects.get_or_create(
-            image=self.popup_image1,
-            content_type=ContentType.objects.get_for_model(models.Modal),
-            object_id=self.modal1.pk,
-            enabled=True,
-        )
+    def test_link(self):
+        self.assertEqual(self.modal.link.get_url(), '/some/funky/url')
 
-        # Add Image to Modal via ImageInstance
-        self.image_instance, _ = ImageInstance.objects.get_or_create(
-            image=self.popup_image1,
-            content_type=ContentType.objects.get_for_model(models.Modal),
-            object_id=self.modal2.pk,
-            enabled=True,
-        )
-        # create my mock modelable object
-        self.modalable = Modalable()
-        self.modalable.save()
+    def test_no_links(self):
+        self.modal_link.delete()
+        self.link.delete()
 
-        self.modalAspect, _ = models.ModalAspect.objects.get_or_create(
-            modal=self.modal1,
-            content_type=ContentType.objects.get_for_model(self.modalable),
-            object_id=self.modalable.pk,
-        )
-
-        self.modalAspect, _ = models.ModalAspect.objects.get_or_create(
-            modal=self.modal2,
-            content_type=ContentType.objects.get_for_model(self.modalable),
-            object_id=self.modalable.pk,
-        )
-
-    def test_modals_tag(self):
-         self.assertTrue(self.modal1.text in bootstrapped_modals(context=RequestContext({}), slug='home-popup'))
-         self.assertTrue(self.modal2.text in bootstrapped_modals(context=RequestContext({}), slug='home-popup2'))
-
-    def test_modals_get_modal_by_slug(self):
-        self.assertEqual(self.modalable.get_modal_by_slug('home-popup'), self.modal1)
-        self.assertEqual(self.modalable.get_modal_by_slug('home-popup2'), self.modal2)
-
-
-    def tearDown(self):
-        pass
+        self.assertEqual(self.modal.links, [])
+        self.assertEqual(self.modal.link, None)

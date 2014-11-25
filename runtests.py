@@ -20,7 +20,8 @@ try:
             "templates",
             "images",
             "attrs",
-            'tests'
+            "tests",
+            "menus"
         ],
         SITE_ID=1,
         NOSE_ARGS=['-s'],
