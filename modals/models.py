@@ -21,6 +21,10 @@ class Modal(PolymorphicModel, GenericAttrMixin, EnabledMixin, SlugMixin,
             TextMixin, TitleMixin, TemplateMixin, ImageMixin):
 
 
+    class Meta:
+        verbose_name = 'Popup Modal Window'
+        verbose_name_plural = 'Popup Modal Windows used with Content Widgets'
+
     @property
     def links(self):
         return [modal_link.link for modal_link in self.aspects.filter(
