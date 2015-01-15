@@ -22,8 +22,7 @@ class Modal(PolymorphicModel, GenericAttrMixin, EnabledMixin, SlugMixin,
 
 
     class Meta:
-        verbose_name = 'Popup Modal Window'
-        verbose_name_plural = 'Popup Modal Windows used with Content Widgets'
+        verbose_name = 'Reasons & Sydney Popup'
 
     @property
     def links(self):
